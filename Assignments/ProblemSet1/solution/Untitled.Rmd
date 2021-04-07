@@ -1,0 +1,41 @@
+---
+title: "Untitled"
+author: "Sumeet Mishra"
+date: "1/8/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+Warriors=read.table('warriors.txt', header = TRUE)
+View(Warriors)
+```
+
+
+
+```{r}
+ggplot(Warriors,aes(x=Height,y=Name)) + geom_point()
+```
+
+```{r}
+ggplot(Warriors,aes(x=Name,y=Height)) + geom_bar(stat='identity')+coord_flip()
+```
+
+
+```{r}
+ggplot(Warriors,aes(x=Height,y=Name,color=Pos)) + geom_point()
+```
+
+```{r}
+o=order(Warriors$Height)
+Warriors$Name=factor(Warriors$Name,levels=Warriors$Name[o])
+ggplot(Warriors,aes(x=Height,y=Name,color=Pos)) + geom_point()+xlab("Height(inches)")+ggtitle("Heights of the 2017-18 Warriors")
+```
+
+

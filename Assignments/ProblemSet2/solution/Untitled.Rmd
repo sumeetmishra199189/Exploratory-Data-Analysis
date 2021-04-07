@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+author: "Sumeet Mishra"
+date: "1/17/2019"
+output: html_document
+---
+
+```{r}
+library(lattice)
+library(tidyverse)
+```
+
+use aggregate():
+
+```{r}
+singer.agg=aggregate(height~voice.part,median,data=singer)
+ggplot(singer.agg,aes(x=height,y=voice.part))+geom_point()
+
+```
+
+use summarize() and group_by()
+
+```{r}
+summarise(group_by(singer,voice.part),median=median(height),mean=mean(height))
+```
+
+or pipes:
+```{r}
+singer.sum=singer %>% group group_by(voice.part) %>% summarise(median(height),Mean=mean(height))
+ggplot(singer.sum,aes(x=Median,y=voice.part))+geom_point()
+```
+
+```{r}
+singer.long=gather(singer.sum,key="Statistic",value="Height",c("Median","Mean"))
+ggplot(singer.long,aes(x=Height,y=voice.part,color=Statistic))+geom_point()
+```
+
+##Comparing whole distributions:
+
+```{r}
+
+ggplot(singer.agg,aes(x=height,y=voice.part))+geom_boxplot(coef=3)+
+  theme(axis.text=element_text(size=12))
+```
+
+```{r}
+ggplt(singer,aes=height))+geom_histogram(binwidth=1)+facet_wrap(~voice.part)
+```
+
+
+```{r}
+library(ggpubr)
+#ggplot(anes_final,aes(Trump))+geom_histogram(binwidth = 5)
+gg_t=ggplot(anes_final,aes(Trump))+geom_density()
+gg_c=ggplot(anes_final,aes(Clinton))+geom_density()
+gg_s=ggplot(anes_final,aes(Sanders))+geom_density()
+gg_r=ggplot(anes_final,aes(Rubio))+geom_density()
+ggarrange(gg_t, gg_c, gg_s,gg_r ,ncol=1, nrow =4,
+          heights = c(1,1,1,1))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

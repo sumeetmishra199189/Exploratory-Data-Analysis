@@ -1,0 +1,129 @@
+---
+title: "Untitled"
+author: "Sumeet Mishra"
+date: "2/6/2019"
+output: html_document
+---
+```{r message=FALSE}
+library(ggplot2)
+library(readstata13)
+library(reshape)
+lm=read.dta13('LM_WPID_web_2.dta')
+ventile=read.dta13('ventile_2011_for_release_LCU.dta')
+wyd=read.dta13('wyd_88_05_for_release.dta')
+#lm1 <- lm[ which(country==USA),]
+lm1<- subset(lm, contcod=='USA')
+#View(lm1)
+ggplot(lm1,aes(x=year,y=RRinc,group=group,color=factor(group)))+geom_point()+geom_smooth(se=FALSE)+scale_x_continuous(limits=c(1985,2010))
+
+```
+
+
+```{r}
+#View(ventile)
+
+#View(ventile1)
+#mean.vi=mean(ventile1$ventile_income,ventile1$contcod)
+#mean=aggregate(ventile1[, 6], list(ventile1$contcod), mean)
+#ventile_income=ventile1$ventile_income/mean
+#View(ventile1)
+#View(ventile_income)
+#library(plyr)
+#ddply(ventile1, .(contcod), summarize,mean.vi=mean(ventile1$ventile_income))
+#m=aggregate( contcod ~ ventile_income, ventile1, mean )
+#res.by <- by(ventile1$contcod, ventile1$ventile_income, mean)
+#res.by
+#library(dplyr)
+#m=group_by(ventile1, contcod) %>% (ventile1,((ventile_income-mean(ventile_income))/sd(ventile_income)))
+#m=group_by(ventile1, contcod) %>% summarize(mean(ventile_income))
+#function_normal<-function(ventile_income){
+ #(ventile_income-mean(ventile_income))/sd(ventile_income)
+}
+#x=aggregate(ventile1$ventile_income,by=list(Category=ventile1$contcod),FUN=function_normal)
+#y=t(x)
+#ventile1$s_income=gather()
+```
+
+
+```{r fig.height = 4, fig.width = 7}
+ventile1<- subset(ventile, contcod %in% c('USA','GBR','DEU','IND','TWN'))
+function_normal<-function(ventile_income){
+  #(ventile_income-mean(ventile_income))/sd(ventile_income)
+(ventile_income/sum(ventile_income))*100
+}
+normalized<-aggregate(ventile1$ventile_income,by=list(Category=ventile1$contcod),FUN=function_normal)
+
+data_one<-as.data.frame(t(normalized)) 
+names(data_one)<-c("DEU","GBR","IND","TWN","USA")
+data_one<-data_one[-1,]
+#summary(data_one)
+x_normalized<-melt(data_one,measure.vars = c("DEU","GBR","IND","TWN","USA"))
+#ventile1<-ventile1[,-9:-17]
+income<-(x_normalized$value)
+ventile1<-cbind(ventile1,income)
+#ventile1$x_normalized
+ggplot(ventile1,aes(x=contcod,y=income,fill=factor(ventile)))+geom_bar(stat="identity", position = "stack")
+#+geom_bar(aes(color=factor(ventile)))
+  
+#View(ventile1)
+#typeof(x_normalized$value)
+#ggplot(ventile1,aes(x=contcod,y=ventile_income))+geom_point(aes(color=factor(ventile)))
+#summary(ventile1$income)
+
+```
+
+```{r}
+
+ggplot(ventile1,aes(x=contcod,y=income,color=factor(ventile)))+geom_bar(stat="identity", position = "dodge")
+```
+
+```{r}
+
+ggplot(ventile1,aes(x=contcod,y=income,color=factor(ventile)))+geom_point()
+
+```
+
+
+
+
+
+```{r}
+
+
+#View(ventile2)
+#ggplot(ventile2,aes(x=contcod,y=)+geom_bar()
+function_mean<-function(ventile_income){
+  mean(ventile_income)
+}
+meann<-aggregate(ventile1$ventile_income,by=list(Category=ventile1$contcod),FUN=function_mean)
+data_two<-as.data.frame(t(meann)) 
+names(data_two)<-c("DEU","GBR","IND","TWN","USA")
+data_two<-data_two[-1,]
+x_meann<-melt(data_two,measure.vars = c("DEU","GBR","IND","TWN","USA"))
+#ventile1<-ventile1[,-9:-17]
+m_income<-(x_meann$value)
+ventile1<-cbind(ventile1,m_income)
+ventile2<-subset(ventile1,ventile %in%c(1,20))
+ggplot(ventile2,aes(x=contcod,y=m_income,color=factor(ventile)))+geom_point()+geom_smooth()
+
+
+```
+
+```{r}
+#View(ventile)
+#View(wyd)
+#ggplot(wyd,ventile,aes(x=ventile$ventile_income,y=wyd$region))+geom_point()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+

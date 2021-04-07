@@ -1,0 +1,242 @@
+---
+title: "Mini Project 2"
+author: "Sumeet Mishra,Kimball Wu,Ling Tan,Pei-YI-Cheng"
+date: "2019年3月20日"
+output: html_document
+---
+
+Code for the graph in question 1
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+DFP=read.csv('DFP_WTHH_release.csv', header = TRUE)
+
+
+myvars<-c("presvote16post","house3","weight_DFP","M4A","GREENJOB","WEALTH","MARLEG","ICE","GUNS","POP_1","POP_2","POP_3")
+dfp1<-DFP[myvars]
+issue_variables=c("M4A","GREENJOB","WEALTH","MARLEG","ICE","GUNS")
+#View(dfp1)
+
+dfp1$vote_status <- ifelse(dfp1$presvote16post != 1 & dfp1$house3==1, 1, ifelse(dfp1$presvote16post != 2 & dfp1$house3==2, 2,3))
+
+dfp10=subset(dfp1,vote_status==c(1,2))
+
+
+m4a=ggplot(dfp10,aes(x=M4A,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+
+greenjob=ggplot(dfp10,aes(x=GREENJOB,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6))+ scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+
+wealth=ggplot(dfp10,aes(x=WEALTH,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6))+ scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+ 
+marleg=ggplot(dfp10,aes(x=MARLEG,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6))+ scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+
+ice=ggplot(dfp10,aes(x=ICE,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6))+ scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+
+guns=ggplot(dfp10,aes(x=GUNS,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6))+ scale_fill_manual(values=c( "#56B4E9","#999999"), 
+                       name="Swing Voter's Status",
+                       breaks=c("1", "2"),
+                       labels=c("Switch to Democrat", "Switch to Republican"))
+ 
+ggarrange(m4a, greenjob, wealth,marleg,ice,guns, ncol = 2, nrow = 3,common.legend = TRUE)
+
+```
+
+Code for the graph in Question 2
+
+```{r}
+dfp1$vote_status <- ifelse(dfp1$presvote16post == dfp1$house3, dfp1$house3, 10)
+dfp3=subset(dfp1,vote_status==c(1,2,10))
+
+m4a2=ggplot(dfp3,aes(x=M4A,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+greenjob2=ggplot(dfp3,aes(x=GREENJOB,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+wealth2=ggplot(dfp3,aes(x=WEALTH,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+marleg2=ggplot(dfp3,aes(x=MARLEG,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+ice2=ggplot(dfp3,aes(x=ICE,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+guns2=ggplot(dfp3,aes(x=GUNS,y = ..density..,weight=weight_DFP,fill=factor(vote_status)))+geom_histogram(position="dodge",binwidth=0.5)+theme_bw()+scale_x_continuous(breaks = seq(1, 6)) + scale_fill_manual(values=c( "#E69F00","#009E73","#999999"), 
+                       name="Voter's Status",
+                       breaks=c("1", "2","10"),
+                       labels=c("Loyal Democrats", "Loyal Republicans","Swing Voters"))
+ggarrange(m4a2, greenjob2, wealth2,marleg2,ice2,guns2, ncol = 2, nrow = 3,common.legend = TRUE)
+
+```
+
+Code for predicted value graph in question 3(a): predict swing voter with issue variable
+
+```{r}
+
+library(data.table)
+
+data = read.csv('DFP_WTHH_release.csv')
+issues = c('M4A','GREENJOB','WEALTH','MARLEG','ICE','GUNS')
+populism = c('POP_1','POP_2','POP_3')
+models = c('presvote16post','house3','weight_DFP')
+var_all = c(issues, populism, models)
+
+data = data.table(data)
+data = data[,var_all, with=F]
+ 
+# categorize voter
+data[house3==1 & presvote16post==1, voter:='DD']
+data[house3==1 & presvote16post==2, voter:='DR']
+data[house3==2 & presvote16post==1, voter:='RD']
+data[house3==2 & presvote16post==2, voter:='RR']
+data[!is.na(house3) & is.na(voter), voter:='GS']
+
+# re-categorize voter
+data[voter=='DD', voter2:='LD']  
+data[voter=='RR', voter2:='LR']  
+data[voter %in% c('GS','DR','RD'), voter2:='Swing']  
+data[,swing:=(voter2=='Swing'),]
+
+
+rm_na <- function(data, varlist){
+  # trun not sure to na
+  for (j in seq_len(ncol(data))){
+    if (names(data)[j] %in% varlist){
+      set(data, which(data[[j]]==6), j, 3)
+    }
+  }
+  # drop na
+  return(na.omit(data))
+}
+
+# model build
+mdl_data= rm_na(data, issues)
+mdl= glm(mdl_data, formula = swing ~ WEALTH*MARLEG + WEALTH*ICE + MARLEG*GUNS ,family = binomial, weights = weight_DFP)
+summary(mdl)
+
+# predicted value graph
+fitdata = expand.grid(GUNS=seq(5), WEALTH=seq(5), ICE=seq(5), MARLEG=seq(5))
+fitdata = as.data.table(fitdata)
+fitdata[['predict']]= as.vector(predict(mdl, newdata=fitdata))
+fitdata[,predict:= exp(predict)/(1+exp(predict))]
+
+
+g1 = summarize(group_by(fitdata, WEALTH, MARLEG), predict=mean(predict))
+ggplot(g1, aes(x = WEALTH, y = MARLEG, z = predict)) +
+  geom_raster(aes(fill = predict)) +
+  geom_contour(color='gray20')+
+  coord_fixed()+
+  scale_x_continuous(breaks=seq(5))+
+  scale_y_continuous(breaks=seq(5))+
+  scale_fill_distiller(name= 'predicted probability of\nbeing swing voter', palette = "RdYlBu", direction=-1)+
+  labs(title = "Predicting swing voter probability against voter's attitutde to policy issue",
+       subtitle = '1= Strongly support, 5=Strongly oppose. "Not sure" categorized as 3',
+       x="wealth tax", y='marijuana legalization')+
+  theme(title= element_text(size=10))
+
+
+
+g2 = summarize(group_by(fitdata, WEALTH, ICE), predict=mean(predict))
+ggplot(g2, aes(x = WEALTH, y = ICE, z = predict)) +
+  geom_raster(aes(fill = predict)) +
+  geom_contour(color='gray20')+
+  coord_fixed()+
+  scale_x_continuous(breaks=seq(6))+
+  scale_y_continuous(breaks=seq(6))+
+  scale_fill_distiller(name= 'predicted probability of\nbeing swing voter', palette = "RdYlBu")+
+  labs(title = "Predicting swing voter probability against voter's attitutde to policy issue",
+       subtitle = '1= Strongly support, 5=Strongly oppose. "Not sure" categorized as 3',
+       x="wealth tax", y='defunding ICE')+
+  theme(title= element_text(size=10))
+
+
+g3 = summarize(group_by(fitdata, MARLEG, GUNS), predict=mean(predict))
+ggplot(g3, aes(x = MARLEG, y = GUNS, z = predict)) +
+  geom_raster(aes(fill = predict)) +
+  geom_contour(color='gray20')+
+  coord_fixed()+
+  scale_x_continuous(breaks=seq(6))+
+  scale_y_continuous(breaks=seq(6))+
+  scale_fill_distiller(name= 'predicted probability of\nbeing swing voter', palette = "RdYlBu")+
+  labs(title = "Predicting swing voter probability against voter's attitutde to policy issue",
+       subtitle = '1= Strongly support, 5=Strongly oppose. "Not sure" categorized as 3',
+       x="marijuana legalization", y='gun control')+
+  theme(title= element_text(size=10))
+
+
+
+
+```
+
+
+Code for predicted value graph in question 3(b): predict swing voter with populism variable
+
+```{r}
+dfp4=subset(dfp1)
+dfp4$swing_voter_status <- ifelse(dfp4$vote_status!=10,0,1)
+swing.weighted.logit = glm(swing_voter_status ~ POP_1+POP_2, family = quasibinomial, weights =weight_DFP , data = dfp4)
+pop.df = expand.grid(POP_1=seq(1,5,1),POP_2=seq(1,5,1),POP_3=seq(1,5,1))
+pop.pred = predict( swing.weighted.logit, type = "response", newdata = pop.df)
+pop.pred.df = data.frame(pop.df, swing.prob = as.vector(pop.pred)) 
+ggplot(pop.pred.df, aes(x = POP_1, y = swing.prob,group=POP_2,color=POP_2)) +geom_line()+scale_x_continuous(breaks = seq(1, 5))+theme_bw() 
+#ggplot(pop.pred.df, aes(x = POP_2, y = swing.prob,group=POP_3,color=POP_3)) +geom_line()+scale_x_continuous(breaks = seq(1, 5))+theme_bw()  
+#ggplot(pop.pred.df, aes(x = POP_1, y = swing.prob,group=POP_3,color=POP_3)) +geom_line()+scale_x_continuous(breaks = seq(1, 5))+theme_bw() 
+#+ xlab("Distance from nearest safe well") + ylab("Probability of switching labs(color = "Arsenic concentration")
+#summary( swing.weighted.logit ) 
+
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(GGally)
+library(boot)
+
+voters = read.csv("DFP_WTHH_release.csv", header = TRUE)
+var <- c("presvote16post", "house3", "weight_DFP", "M4A", "GREENJOB", "WEALTH", "MARLEG", "ICE", "GUNS", "POP_1", "POP_2", "POP_3")
+voters <- voters[var]
+cols <- c("M4A", "GREENJOB", "WEALTH", "MARLEG", "ICE", "GUNS", "POP_1", "POP_2", "POP_3")
+voters[cols] <- lapply(voters[cols], as.factor)
+summary(voters)
+str(voters)
+
+Q1_switch <- voters %>% filter(!is.na(presvote16post)) %>% mutate(switch = ifelse(presvote16post != 1 & house3 == 1, "switch_to_D", ifelse(presvote16post != 2 & house3 == 2, "switch_to_R", ifelse(presvote16post == 1 & house3 == 1, "loyal_D", ifelse(presvote16post == 2 & house3 == 2, "loyal_R", "others"))))) 
+Q1_w_l <- Q1_switch %>% gather(issue, issue_val, M4A:GUNS) %>% filter(switch == "switch_to_D" | switch == "switch_to_R")
+Q1_perc <- Q1_w_l %>% mutate(new_val = ifelse(is.na(issue_val), 6, issue_val)) %>% mutate(new_val = ifelse(new_val == 6, 'not sure', new_val)) %>% filter(new_val != 'not sure') %>% group_by(new_val, switch, issue) %>% summarise(ct_val = n()) %>% group_by(switch, issue) %>% mutate(n_switch = sum(ct_val), perc_val = (ct_val / n_switch))
+ggplot(Q1_perc, aes(x = new_val, y = perc_val)) + geom_bar(stat="identity") + facet_grid(switch ~ issue) + xlab("Support or Oppose") + ylab("Proportion in That Voter Group)")
+ggplot(Q1_perc, aes(x = new_val, y = perc_val, fill = switch)) + geom_bar(stat="identity", position=position_dodge()) + facet_wrap( ~issue, ncol = 3) + xlab("Support or Oppose") + ylab("Proportion in That Voter Group") + scale_fill_manual(values=c('#56B4E9',"#CC79A7")) + theme_bw() + guides(fill=guide_legend(title="Swing Voters")) + labs(title = "Difference on Issues between Switch_to_Democrat and Switch_to_Republican \nVoters", subtitle = "Issues on 1–5 scale. 1:strongly agree; 5:strongly disagree.")
+
+Q2_switch <- voters %>% filter(!is.na(presvote16post)) %>% mutate(switch = ifelse(presvote16post != 1 & house3 == 1, "swing", ifelse(presvote16post != 2 & house3 == 2, "swing", ifelse(presvote16post == 1 & house3 == 1, "loyal_D", ifelse(presvote16post == 2 & house3 == 2, "loyal_R", "others"))))) 
+
+Q2_w_l <- Q2_switch %>% gather(issue, issue_val, M4A:GUNS) %>% filter(switch == "swing" | switch == "loyal_D"| switch == "loyal_R")
+Q2_perc <- Q2_w_l %>% mutate(new_val = ifelse(is.na(issue_val), 6, issue_val)) %>% mutate(new_val = ifelse(new_val == 6, 'not sure', new_val)) %>% filter(new_val != 'not sure') %>% group_by(new_val, switch, issue) %>% summarise(ct_val = n()) %>% group_by(switch, issue) %>% mutate(n_switch = sum(ct_val), perc_val = (ct_val / n_switch))
+ggplot(Q2_perc, aes(x = new_val, y = perc_val)) + geom_bar(stat="identity") + facet_grid(switch ~ issue) + xlab("Support or Oppose") + ylab("Proportion in that Group") 
+ggplot(Q2_perc, aes(x = new_val, y = perc_val, fill = switch)) + geom_bar(stat="identity", position=position_dodge()) + facet_wrap( ~issue, ncol = 3) + xlab("Support or Oppose") + ylab("Proportion in That Voter Group")  + theme(axis.text.x = element_text(angle = 90)) + scale_fill_manual(values=c('#0072B2',"#D55E00", "#999999")) + theme_bw() + guides(fill=guide_legend(title="Voters")) + labs(title = "Difference on Issues between Swing, loyal_Democrats and loyal_Republicans \nVoters", subtitle = "Issues on 1–5 scale. 1:strongly agree; 5:strongly disagree.")
+
+
+```
+
+

@@ -1,0 +1,78 @@
+---
+title: "problemSet6"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(MASS)
+library(broom)
+cb_palette = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
+```
+
+
+```{r}
+barley_6 <- read.table("/Users/addytan/Downloads/minnesota.barley.yield.txt", header = TRUE)
+summary(barley_6)
+str(barley_6)
+```
+
+
+1. Draw an appropriate faceted graph showing how barley yield varied by year at each location, using color as necessary. (Note: Lines might be better than dots here.) When looking at successive years, was it more common for the yields to move in the same direction at all locations, or was it more common for the yields to increase at some locations and decrease at others?
+
+```{r}
+Q1 <- barley_6 %>% group_by(year, site) %>% summarise(total_yield = mean(yield))
+ggplot(Q1, aes(x = year, y = total_yield, color = site)) + geom_line() + scale_color_manual(values = cb_palette) + ggtitle("Graph 1:Plot of the Relationship between Average Yield and Year faceted by Site") +
+  xlab("Year") + ylab("Barley Crop Yield (bushels per acre)")
+ggplot(Q1, aes(x = year, y = total_yield, color = site)) + geom_line() + facet_wrap(~site) + scale_color_manual(values = cb_palette) + ggtitle("Graph 2:Plot of the Relationship between Average Yieldand Year faceted by Site") + xlab("Year") + ylab("Barley Crop Yield (bushels per acre)")
+ggplot(barley_6, aes(x = year, y = yield, color = gen)) + geom_line() + facet_wrap(~site) + ggtitle("Graph 3:Plot of the Relationship between Yield of Each Type of Barleyand Year faceted by Site") + xlab("Year") + ylab("Barley Crop Yield (bushels per acre)")
+```
+
+# filtered
+```{r}
+barley_f <- barley_6 %>% filter(gen == 'Trebi' | gen == 'WisNo38' | gen == 'No457' | gen == 'Glabron' | gen == 'Peatland' | gen == 'Velvet' | gen == 'No475' | gen == 'Manchuria' | gen == 'No462' | gen == 'Svansota') %>%   droplevels()
+#Q1f <- barley_f %>% group_by(year, site) %>% summarise(total_yield = sum(yield))
+#ggplot(Q1f, aes(x = year, y = total_yield, color = site)) + geom_line() + scale_color_manual(values = cb_palette) + ggtitle("Graph 1:Plot of the Relationship between Total Yield and Year faceted by Site")
+#ggplot(Q1f, aes(x = year, y = total_yield, color = site)) + geom_line() + facet_wrap(~site) + scale_color_manual(values = cb_palette) + ggtitle("Graph 2:Plot of the Relationship between Total Yieldand Year faceted by Site")
+#ggplot(barley_f, aes(x = year, y = yield, color = gen)) + geom_line() + facet_wrap(~site) + scale_color_manual(values = cb_palette) + ggtitle("Graph 3:Plot of the Relationship between Yield of Each Type of Barleyand Year faceted by Site")
+```
+
+## it was more common for the yields to increase at some locations and decrease at others.
+
+2. Fit a model with yield as the response and gen (variety), year, and site as explanatory variables, with the goal of determining whether Morris 1931-1932 is an anomaly. Justify why you chose this model and not some other one. Because of outliers, you should use a robust fitting method.
+
+# filtered
+```{r}
+Q2_f <- barley_f %>% group_by(site, gen) %>% mutate(dif = yield-lag(yield))
+Q2_f <- Q2_f %>% filter(year != 1927)
+ggplot(Q2_f, aes(x=dif, y = gen, color = factor(year))) + geom_point() + facet_wrap(~site, ncol=3) + scale_color_manual(values = cb_palette) + ggtitle("Graph 4:Plot of the Difference of Annual Yield") + xlab("Difference (in bushels per acre)") + ylab("gen (Types of Barley)")
+```
+
+##### filter with interaction
+```{r}
+barley.rlm_f_w = rlm(yield ~ gen + year*site, psi = psi.bisquare, data = barley_f)
+var(fitted.values(barley.rlm_f_w))/var(barley_f$yield)
+var(fitted.values(barley.rlm_f_w))/(var(fitted.values(barley.rlm_f_w)) + var(residuals(barley.rlm_f_w)))
+```
+
+Q3.
+
+
+```{r, fig.width=8, fig.height=12}
+barley.rlm.df_f = augment(barley.rlm_f_w)
+ggplot(barley.rlm.df_f, aes(x = .resid, y = site)) + geom_point() + facet_wrap(~ gen + year, ncol = 6) + theme(axis.text.y = element_text(size=5)) + ggtitle("Graph 5:Residual Plot by Site and Year")
+```
+#####
+```{r, fig.width=8, fig.height=12}
+ggplot(barley.rlm.df_f, aes(x = .resid, y = gen)) + geom_point() + facet_wrap(~ site + year, ncol=6) + theme(axis.text.y = element_text(size=7)) + theme(strip.text = element_text(size=5), strip.background = element_rect(size=1)) + ggtitle("Graph 6:Residual Plot by gen(Types of Barley) and Year")
+```
+
+
+

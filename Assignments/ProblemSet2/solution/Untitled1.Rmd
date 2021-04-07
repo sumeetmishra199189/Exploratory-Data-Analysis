@@ -1,0 +1,66 @@
+---
+title: "Untitled"
+author: "Sumeet Mishra"
+date: "1/15/2019"
+output: html_document
+---
+Look at heights of the NY Choral Society (`Singer` in `lattice`):
+
+```{r}
+tenors=subset(singer,voice.part %% c())
+summary(tenors)
+nrow(tenors)
+```
+
+plot the distributions of tenor heights:
+```{r}
+ggplot(tenors,aers(x=height))+geom_dotplot(binwidth=1)
+
+```
+
+histograms:
+```{r}
+ggplot(tenors,aers(x=height))+geom_histogram(binwidth=1,breaks=seq(63.5,77.5))+ggtitle("Heights of 42 tenors")+labs("Quartiles:68,69,71 inches")+geom_vline(xintercept = mean(tenor$height))
+
+```
+
+
+Look at all singer's height:
+
+```{r}
+summary(singer)
+ggplot(singer,aes(x=height))
+
+```
+
+
+density plot:
+
+```{r}
+summary(singer)
+ggplot(singer,aes(x=height))+geom_density()
+
+```
+
+
+Draw a QQ plot:
+
+```{r}
+ggplot(singer,aes(x=height))+stat_qq()
+```
+
+Uniform QQ plot:
+
+```{r}
+ggplot(singer,aes(x=height))+stat_qq(distribution=unif)
+```
+
+ECDF plot:
+
+```{r}
+ggplot(singer,aes(x=height))+stat_ecdf()+ylab("Proportion of singers with shorter heights")
+```
+
+
+
+

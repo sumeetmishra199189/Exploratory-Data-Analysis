@@ -1,0 +1,100 @@
+---
+title: "Untitled"
+author: "Sumeet Mishra"
+date: "1/10/2019"
+output: html_document
+---
+```{r}
+library(ggplot2)
+pacers=read.csv('pacers2017-18.csv', header = TRUE)
+nba=read.csv('nba2017-18.csv', header = TRUE)
+View(pacers)
+View(nba)
+```
+
+```{r}
+ggplot(pacers,aes(x=Ht,y=Player,color=Pos)) + geom_point()
+```
+
+
+read in data:
+
+```{r}
+Warriors=read.csv("pacers2017-18.csv")
+
+```
+
+what are average heights by position?
+
+```{r}
+aggregate(Wt~Pos,mean,data=Warriors)
+```
+
+
+put factor in order:
+
+```{r}
+Warriors$Pos=factor(Warriors$Pos,levels=c("PG","SG","SF","PF","C"))
+```
+
+Sort name as a factor by first positin and then weight:
+
+```{r}
+o=order(Warriors$Pos,Warriors$Wt)
+Warriors$Player=factor(Warriors$Player,levels=Warriors$Player[o])
+summary(Warriors$Player)
+```
+
+strsplit to sepatrate
+
+split player names:
+
+```{r}
+library(stringr)
+?str_split
+str_split(Warriors$Player,"\\\\")
+```
+View(Warriors)
+summary(Warriors$Pos)
+
+```{r}
+ggplot(pacers,aes(x=Pos,y=Height,color=Pos)) + geom_point()+geom_text(aes(label=Name),position=position_dodge(width=0.2),vjust=1.3,check_overlap = TRUE,angle=45)
+```
+
+```{r}
+#ggplot(pacers,aes(x=Pos,y=Height,color=Pos)) + geom_point(aes(labels=Name))
+text(Pos ~Height, labels=rownames(Name),data=pacers, cex=0.9, font=2)
+```
+
+```{r}
+o=order(pacers$Pos,pacers$Wt)
+pacers$Player=factor(pacers$Player,levels=pacers$Player[o])
+ggplot(pacers,aes(x=Height,y=Name,color=Pos)) + geom_point()+scale_shape_manual(values=pacers$Pos)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
